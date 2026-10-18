@@ -42,6 +42,7 @@ The bundled [`surface.schema.json`](surface.schema.json) expresses the machine-r
 
 The core JSON schema is permissive about node types. Host renderers decide which `type` values are supported; Prompt Surface's React renderer includes the following contracts.
 
+- `input`, `textarea`, `select`: prefer a visible `props.label` for the native control label. Without one, the React renderer supplies an accessible name from interpolated `props.ariaLabel`, then `props.placeholder`, then the last segment of `bind`, and finally `Text input`, `Text area`, or `Select`. A visible label takes precedence over `ariaLabel`; fallback names are not a substitute for clear user-facing labels.
 - `switch`, `radio-group`, `segmented-control`: set `bind` to state key; supply `props.label`, and for option controls `props.options` (strings or `{label,value}` objects).
 - `tabs`: supply `bind`, `props.options` and `tab-panel` children. Set each panel's `props.value` to a matching option value. Tabs support click and keyboard navigation.
 - `accordion`: supply `bind`, `props.options`, children with `props.value`. A bound string stores the single expanded option (empty string closes all).

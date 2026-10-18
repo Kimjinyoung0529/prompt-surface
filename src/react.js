@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { createSurfaceStore, evaluateCondition, interpolate, readPath } from './core.js';
 import { chartAccessibleDescription } from './chart-a11y.js';
+import { formControlName } from './form-a11y.js';
 
 const h = React.createElement;
 const SurfaceContext = React.createContext(null);
@@ -50,6 +51,7 @@ export function Surface({ document, store: suppliedStore, registry = {}, onEvent
     for (const name of ['text','label','description','title','subtitle','value']) {
       if (typeof props[name] === 'string') props[name] = text(props[name]);
     }
+    const controlName = fallback => formControlName({label:text(p.label),ariaLabel:text(p.ariaLabel),placeholder:text(p.placeholder),bind:node.bind}, fallback);
     const handle = name => event => store.dispatchAll(node.on?.[name] ?? [], event?.type);
     const childNodes = node.children?.map((child, i) => renderNode(child, child.id ?? i)) ?? [];
     const id = node.id ?? key;
@@ -77,10 +79,10 @@ export function Surface({ document, store: suppliedStore, registry = {}, onEvent
       case 'button': return h('button', {key:id,type:'button',className:'ps-button',disabled:!!p.disabled,onClick:handle('click')},text(p.label ?? 'Button'));
       case 'input': return h('label',{key:id,className:'ps-field'},
         p.label ? h('span',null,text(p.label)) : null,
-        h('input',{className:'ps-input',type:['text','email','number'].includes(p.inputType)?p.inputType:'text',placeholder:text(p.placeholder),value:inputValue ?? '',min:p.min,max:p.max,onChange:e=>change(p.inputType==='number' ? Number(e.target.value) : e.target.value)}));
+        h('input',{className:'ps-input','aria-label':controlName('Text input'),type:['text','email','number'].includes(p.inputType)?p.inputType:'text',placeholder:text(p.placeholder),value:inputValue ?? '',min:p.min,max:p.max,onChange:e=>change(p.inputType==='number' ? Number(e.target.value) : e.target.value)}));
       case 'textarea': return h('label',{key:id,className:'ps-field'},
         p.label ? h('span',null,text(p.label)) : null,
-        h('textarea',{className:'ps-input',rows:clamp(p.rows??3,1,12),value:inputValue??'',placeholder:text(p.placeholder),onChange:e=>change(e.target.value)}));
+        h('textarea',{className:'ps-input','aria-label':controlName('Text area'),rows:clamp(p.rows??3,1,12),value:inputValue??'',placeholder:text(p.placeholder),onChange:e=>change(e.target.value)}));
       case 'checkbox': return h('label',{key:id,className:'ps-checkbox'},
         h('input',{type:'checkbox',checked:!!inputValue,onChange:e=>change(e.target.checked)}),
         h('span',null,text(p.label)));
@@ -89,7 +91,7 @@ export function Surface({ document, store: suppliedStore, registry = {}, onEvent
         h('input',{type:'range',className:'ps-range',min:p.min??0,max:p.max??100,step:p.step??1,value:inputValue,onChange:e=>change(Number(e.target.value))}));
       case 'select': return h('label',{key:id,className:'ps-field'},
         p.label ? h('span',null,text(p.label)) : null,
-        h('select',{className:'ps-input',value:inputValue,onChange:e=>change(e.target.value)},
+        h('select',{className:'ps-input','aria-label':controlName('Select'),value:inputValue,onChange:e=>change(e.target.value)},
           (Array.isArray(p.options)?p.options:[]).map((option,i)=>{
             const value = typeof option==='string'?option:String(option?.value??'');
             const label = typeof option==='string'?option:String(option?.label??value);
