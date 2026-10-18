@@ -9,7 +9,8 @@ Prompt Surface handles **untrusted data from language models**. It does *not* pr
 - Prototype-polluting keys (`__proto__`, `prototype`, `constructor`) are rejected in JSON objects, paths and patches.
 - The React renderer uses a limited property allowlist, rather than forwarding arbitrary model-controlled DOM attributes.
 - Images accept only http(s) URLs; they must still be covered by your CSP and network/content policy.
-- A stream line is size limited. It must be valid JSON before an event is applied.
+- A stream line/frame is size limited (default 256 KiB), and browser stream consumption has an additional total byte cap (default 4 MiB). It must be valid JSON before an event is applied.
+- SSE only accepts Prompt Surface event JSON in `data:` fields; it is not a generic provider event interpreter. Browser cancellation propagates via `AbortSignal`.
 - Patches clone and validate the resulting whole document. On failure, nothing is committed.
 
 ## Responsibilities of the host application
@@ -23,3 +24,7 @@ Prompt Surface handles **untrusted data from language models**. It does *not* pr
 - Avoid directly exposing user secrets within generated state, since state is intentionally visible to the browser.
 
 This is a developer preview and has **not** undergone an independent security audit.
+
+## Local development backend
+
+`examples/playground/server.mjs` binds only to `127.0.0.1` and requires environment-based credentials. It is **not production ready**: add authentication, CSRF protections, rate limiting, observability, content moderation, quotas, retry policy, timeout governance, and deployment-specific network controls before exposure to anyone else. Never use a production secret in front-end source.

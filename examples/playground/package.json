@@ -1,0 +1,9 @@
+{
+  "name": "prompt-surface-playground",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {"dev": "vite", "build": "vite build", "preview": "vite preview", "server": "node server.mjs"},
+  "dependencies": {"prompt-surface": "file:../..", "react": "^19.0.0", "react-dom": "^19.0.0"},
+  "devDependencies": {"vite": "^6.3.0"}
+}

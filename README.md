@@ -2,7 +2,7 @@
 
 **A model-agnostic generative UI engine for React.** Turn validated JSON into real, stateful, interactive React UI—without executing model-produced code.
 
-> Status: **v0.1.0 developer preview**. Core tests pass; production hardening, full a11y audits, React integration tests and security review are still required. Not yet published to npm.
+> Status: **v0.2.0 developer preview**. Core tests pass; production hardening, full a11y audits, React integration tests and security review are still required. Not yet published to npm.
 
 Prompt Surface is an original implementation, **not a bundled copy** of OpenAI Apps SDK UI, json-render, CopilotKit, or Open Intelligent UI. Those projects are useful inspirations and potential future adapters, but no code from them is vendored here.
 
@@ -13,10 +13,23 @@ Prompt Surface is an original implementation, **not a bundled copy** of OpenAI A
 - **Model independent:** your backend may use OpenAI, Anthropic, local models, or rules.
 - **No generated JSX or `eval`:** a restricted JSON protocol describes the UI and supported actions.
 - **Interactive state:** immutable store, `set`, `toggle`, `increment`, `append`, `removeAt` and host-bound `emit`.
-- **Stream updates:** newline-delimited JSON `snapshot`/`patch` event protocol with validation before commit.
+- **Stream updates:** JSONL and SSE `snapshot`/`patch` event protocols, validated before commit. Includes fetch `Response`/`ReadableStream` transport with UTF-8 splitting, aborts and size bounds.
 - **React renderer:** 19 built-in node types, composable with your own registered components.
 - **Dependency-light:** core works in Node and modern browsers; React is a peer dependency only for `/react`.
 - **Safety boundaries:** key/path guards, no HTML injection, max node/depth/stream sizes, URL restrictions.
+
+## Local Studio (interactive React playground)
+
+An editable 3-panel UI lives in [`examples/playground`](examples/playground/README.md). The presets and stream simulation are fully local; optionally connect a model using a **server-side** API key.
+
+```bash
+cd examples/playground
+npm install
+npm run dev
+# open http://127.0.0.1:5173
+```
+
+`npm run server` runs a separate loopback-only backend that requires `OPENAI_API_KEY` and `OPENAI_MODEL`. This integration is optional. The UI and core library work without a model.
 
 ## Install from local source
 
@@ -95,6 +108,36 @@ decoder.finish();
 ```
 
 Streaming patch applications are **atomic**: invalid updates are rejected without changing the existing document. The protocol does not run untrusted scripts.
+
+## v0.2.0: consume a model response or a live stream
+
+`prompt-surface/transport` adds **provider-neutral** helpers. A model endpoint can return a single complete JSON surface or send JSONL / SSE with `snapshot` and `patch` events. On input, the runtime validates every event without executing arbitrary model code.
+
+```js
+import { parseSurfaceText, consumeSurfaceStream } from 'prompt-surface/transport';
+import { createSurfaceStore } from 'prompt-surface';
+
+// When your server returns a JSON document:
+const response = await fetch('/api/generate', { method: 'POST' });
+if (!response.ok) throw new Error('Generation failed');
+const surface = parseSurfaceText(await response.text());
+
+// Alternatively, consume JSONL or SSE events from a streaming endpoint:
+const store = createSurfaceStore(surface);
+const controller = new AbortController();
+const streamResponse = await fetch('/api/surface-stream', {signal: controller.signal});
+const result = await consumeSurfaceStream(streamResponse, store, {
+  format: 'sse', // use 'jsonl' for newline-delimited JSON
+  signal: controller.signal,
+  maxTotalBytes: 4 * 1024 * 1024
+});
+// <Surface store={store}/> automatically updates when each event commits.
+console.log(result.events, result.snapshot.revision);
+```
+
+SSE frames should look like `data: {"type":"snapshot", "document":{...}}\n\n` and may end with `data: [DONE]\n\n`. This protocol is **not** an adapter for raw model-provider streaming events; transform those into Prompt Surface events on your own backend.
+
+The optional [local AI generator](examples/playground/server.mjs) demonstrates one way to call an OpenAI-compatible Chat Completions endpoint via server-side `fetch` and check the result before it reaches the browser. It is a development-only example, not a production authentication/authorization layer.
 
 ## Register your own component
 

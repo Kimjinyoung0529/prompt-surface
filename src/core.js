@@ -285,14 +285,16 @@ export function createJSONLDecoder(onEvent, options = {}) {
   const push = chunk => {
     if (closed) throw new SurfaceError('Stream already finished');
     if (typeof chunk !== 'string') throw new SurfaceError('Chunk must be a string');
-    buffer += chunk;
-    if (BufferByteLength(buffer) > maxLine * 2) throw new SurfaceError('Stream buffer exceeds limit', 'STREAM_TOO_LARGE');
-    let newline;
-    while ((newline = buffer.indexOf('\n')) !== -1) {
-      const line = buffer.slice(0, newline).replace(/\r$/, '');
-      buffer = buffer.slice(newline + 1);
-      parse(line);
+    let start = 0;
+    for (let index = 0; index < chunk.length; index++) {
+      if (chunk[index] !== '\n') continue;
+      const line = buffer + chunk.slice(start, index);
+      buffer = '';
+      if (BufferByteLength(line) > maxLine) throw new SurfaceError('Stream line exceeds limit', 'STREAM_TOO_LARGE');
+      parse(line.replace(/\r$/, ''));
+      start = index + 1;
     }
+    buffer += chunk.slice(start);
     if (BufferByteLength(buffer) > maxLine) throw new SurfaceError('Stream line exceeds limit', 'STREAM_TOO_LARGE');
   };
   const finish = () => { if (!closed) { if (buffer.trim()) parse(buffer); buffer = ''; closed = true; } };
