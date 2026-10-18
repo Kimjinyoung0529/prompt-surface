@@ -271,7 +271,9 @@ export function createSurfaceStore(initialDocument, options = {}) {
 
 /** Stateful decoder for newline-delimited JSON; no eval and bounded buffering. */
 export function createJSONLDecoder(onEvent, options = {}) {
+  if (typeof onEvent !== 'function') throw new SurfaceError('onEvent callback required', 'STREAM_INVALID');
   const maxLine = options.maxLineBytes ?? 256 * 1024;
+  if (!Number.isSafeInteger(maxLine) || maxLine < 1) throw new SurfaceError('Invalid line limit', 'STREAM_INVALID');
   let buffer = '';
   let closed = false;
   const parse = line => {

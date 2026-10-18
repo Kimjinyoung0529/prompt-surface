@@ -9,7 +9,7 @@ Prompt Surface handles **untrusted data from language models**. It does *not* pr
 - Prototype-polluting keys (`__proto__`, `prototype`, `constructor`) are rejected in JSON objects, paths and patches.
 - The React renderer uses a limited property allowlist, rather than forwarding arbitrary model-controlled DOM attributes.
 - Images accept only http(s) URLs; they must still be covered by your CSP and network/content policy.
-- A stream line/frame is size limited (default 256 KiB), and browser stream consumption has an additional total byte cap (default 4 MiB). It must be valid JSON before an event is applied.
+- A stream line/frame is size limited (default 256 KiB), and browser stream consumption has an additional total byte cap (default 4 MiB). It must be valid JSON before an event is applied. The exported JSONL decoder requires a callback and a positive safe-integer `maxLineBytes` limit; invalid configuration is rejected immediately instead of disabling the bound.
 - SSE only accepts Prompt Surface event JSON in `data:` fields; it is not a generic provider event interpreter. Browser cancellation propagates via `AbortSignal`.
 - Patches clone and validate the resulting whole document. On failure, nothing is committed.
 

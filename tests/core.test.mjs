@@ -98,3 +98,16 @@ test('generated system prompt describes safe protocol',()=>{
   assert.match(prompt,/data-only/);
   assert.match(prompt,/version/);
 });
+
+test('JSONL decoder rejects unsafe configuration before buffering',()=>{
+  assert.throws(()=>createJSONLDecoder(null),e=>e.code==='STREAM_INVALID');
+  for (const maxLineBytes of [0,-1,1.5,NaN,Infinity,Number.MAX_SAFE_INTEGER+1,'20']) {
+    assert.throws(()=>createJSONLDecoder(()=>{}, {maxLineBytes}),e=>e.code==='STREAM_INVALID');
+  }
+  const events=[];
+  const valid=createJSONLDecoder(event=>events.push(event),{maxLineBytes:7});
+  valid.push('{"x":');valid.push('1}\n');valid.finish();
+  assert.deepEqual(events,[{x:1}]);
+  const unicode=createJSONLDecoder(()=>{}, {maxLineBytes:4});
+  assert.throws(()=>unicode.push('"한"\n'),e=>e.code==='STREAM_TOO_LARGE');
+});
