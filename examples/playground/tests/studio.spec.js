@@ -11,7 +11,7 @@ test('renders and operates live interactive state', async ({ page }) => {
   await page.getByRole('checkbox', {name:'I finished cooking'}).check();
   await expect(page.locator('.ps-badge').getByText('Dinner is ready!', {exact:true})).toBeVisible();
   await page.getByRole('button', {name:'Submit recipe'}).click();
-  await expect(page.getByText('recipe.submit')).toBeVisible();
+  await expect(page.locator('.events .event').getByText('recipe.submit')).toBeVisible();
   await page.getByRole('button', {name:'Reset state'}).click();
   await expect(page.getByText('Hi Chef!')).toBeVisible();
   await expect(page.locator('.ps-badge').getByText('Dinner is ready!', {exact:true})).toHaveCount(0);
@@ -55,7 +55,7 @@ test('interactive gallery supports tabs, stateful controls, accordion and carous
   await page.getByRole('button', {name:'Can I use another model?'}).click();
   await expect(page.getByText('The protocol is a JSON document, independent from your model provider.')).toBeVisible();
   await page.getByRole('button', {name:'Send order'}).click();
-  await expect(page.getByText('order.submit')).toBeVisible();
+  await expect(page.locator('.events .event').getByText('order.submit')).toBeVisible();
 });
 
 test('travel planner tabs, radio, accordion and theme are usable', async ({ page }) => {
@@ -72,7 +72,7 @@ test('travel planner tabs, radio, accordion and theme are usable', async ({ page
   await page.getByRole('button',{name:'Toggle preview theme'}).click();
   await expect(page.locator('.ps-surface[data-ps-theme="dark"]')).toBeVisible();
   await page.getByRole('button',{name:'Save itinerary'}).click();
-  await expect(page.getByText('trip.save')).toBeVisible();
+  await expect(page.locator('.events .event').getByText('trip.save')).toBeVisible();
 });
 
 test('knowledge quiz conditional content and controls', async ({ page }) => {
