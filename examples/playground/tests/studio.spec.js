@@ -94,3 +94,24 @@ test('unsafe javascript links are not rendered', async ({ page }) => {
   await page.getByRole('button',{name:/Apply JSON/}).click();
   await expect(page.getByRole('link',{name:'Unsafe'})).toHaveCount(0);
 });
+
+test('progress indicators expose meaningful names and live bound values', async ({ page }) => {
+  const editor = page.getByRole('textbox', {name:'JSON document editor'});
+  const document = {
+    version:'1.0',
+    state:{completion:35, task:'Report'},
+    root:{type:'column',children:[
+      {type:'progress',bind:'completion',props:{label:'{{task}} upload',max:100}},
+      {type:'progress',props:{value:25,max:50}},
+      {type:'button',props:{label:'Advance upload'},on:{click:[{type:'increment',path:'completion',by:5}]}}
+    ]}
+  };
+  await editor.fill(JSON.stringify(document));
+  await page.getByRole('button', {name:/Apply JSON/}).click();
+  const named = page.getByRole('progressbar', {name:'Report upload'});
+  await expect(named).toHaveAttribute('value','35');
+  await expect(named).toHaveAttribute('max','100');
+  await expect(page.getByRole('progressbar', {name:'Progress', exact:true})).toHaveAttribute('value','25');
+  await page.getByRole('button', {name:'Advance upload'}).click();
+  await expect(named).toHaveAttribute('value','40');
+});

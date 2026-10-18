@@ -180,7 +180,7 @@ export function Surface({ document, store: suppliedStore, registry = {}, onEvent
         const value = node.bind ? Number(inputValue) : Number(p.value??0);
         const max = Number(p.max)>0?Number(p.max):100;
         return h('div',{key:id,className:'ps-progress-group'},p.label?h('span',null,text(p.label)):null,
-          h('progress',{className:'ps-progress',value:clamp(value,0,max),max}));
+          h('progress',{className:'ps-progress',value:clamp(value,0,max),max,'aria-label':text(p.label || 'Progress')}));
       }
       case 'metric': return h('div',{key:id,className:'ps-metric'},
         h('span',{className:'ps-metric-label'},text(p.label)),
