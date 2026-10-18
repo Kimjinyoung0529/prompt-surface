@@ -6,3 +6,7 @@ coverage/
 .env.*
 !.env.example
 .DS_Store
+
+# Browser test artifacts
+playwright-report/
+test-results/

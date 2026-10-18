@@ -12,4 +12,28 @@ jobs:
           node-version: '22'
       - run: npm run check
       - run: npm run pack:dry
-      - run: cd examples/playground && npm install --no-fund --no-audit && npm run build
+      - name: Install Studio and build
+        working-directory: examples/playground
+        run: npm install --no-fund --no-audit && npm run build
+      - name: Install browser for end-to-end verification
+        working-directory: examples/playground
+        run: npx playwright install --with-deps chromium
+      - name: Run React browser tests and capture actual screenshots
+        working-directory: examples/playground
+        run: npm run test:e2e
+      - name: Upload real app screenshots and browser test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prompt-surface-studio-browser-results
+          path: |
+            examples/playground/test-results/
+            examples/playground/playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Upload built Studio for local preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: prompt-surface-studio-build
+          path: examples/playground/dist/
+          retention-days: 14

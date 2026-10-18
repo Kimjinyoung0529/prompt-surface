@@ -1,6 +1,6 @@
 {
   "name": "prompt-surface",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Model-agnostic generative UI for React with safe actions and JSONL/SSE streaming transports",
   "type": "module",
   "license": "MIT",

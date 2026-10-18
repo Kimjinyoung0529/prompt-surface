@@ -20,6 +20,7 @@ function App() {
   const [status,setStatus] = useState('Ready — choose a preset, edit JSON, or connect a model');
   const [busy,setBusy] = useState(false);
   const [active,setActive] = useState('Recipe planner');
+  const [showEditor,setShowEditor] = useState(true);
   const store = useMemo(() => createSurfaceStore(initial,{
     onEvent:event=>setEvents(prev=>[`${new Date().toLocaleTimeString()} • ${event.name}`, ...prev].slice(0,8))
   }),[]);
@@ -32,6 +33,17 @@ function App() {
     setStatus(label);
   };
   const loadPreset = name => {setActive(name);install(clone(presets[name]),`${name} loaded`);};
+  const resetSurface = () => {
+    const base = presets[active] ?? recipe;
+    install(clone(base),'Document and interactive state reset');
+  };
+  const downloadJson = () => {
+    const blob = new Blob([JSON.stringify(store.getSnapshot().document,null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url; link.download = 'surface.json';
+    link.click(); URL.revokeObjectURL(url);
+  };
   const applyJson = () => {
     try {install(parseSurfaceText(editor),'Document updated from JSON editor');}
     catch(error){setStatus(`Invalid document: ${error.message}`);}
@@ -67,12 +79,13 @@ function App() {
     } catch(error) {setStatus(`Stream failed: ${error.message}`);} finally {setBusy(false);}
   };
   return <div className="studio">
+    <a className="skip-link" href="#studio-workspace">Skip to workspace</a>
     <header className="topbar">
-      <div className="brand"><div className="mark">✳</div><div><strong>Prompt Surface</strong><small>STUDIO · 0.2.0</small></div></div>
+      <div className="brand"><div className="mark">✳</div><div><strong>Prompt Surface</strong><small>STUDIO · 0.2.1</small></div></div>
       <div className="top-right"><span className="pill"><span className="live-dot"/> Local development</span><a href="https://github.com/Kimjinyoung0529/prompt-surface" target="_blank" rel="noreferrer">GitHub ↗</a></div>
     </header>
-    <main>
-      <div className="intro"><div><p className="eyebrow">GENERATIVE UI ENGINE</p><h1>Turn JSON into interactive experiences.</h1><p>A real React renderer, with safe actions, live state and streaming updates. Try it right here.</p></div><div className="version-chip">Version 0.2.0</div></div>
+    <main id="studio-workspace">
+      <div className="intro"><div><p className="eyebrow">GENERATIVE UI ENGINE</p><h1>Turn JSON into interactive experiences.</h1><p>A real React renderer, with safe actions, live state and streaming updates. Try it right here.</p></div><div className="version-chip">Version 0.2.1</div></div>
       <div className="workspace">
         <section className="panel controls"><div className="panel-heading"><span className="step">01</span><div><h2>Create</h2><p>Choose a template or generate a new surface</p></div></div>
           <label className="field-label">PRESET DOCUMENTS</label>
@@ -84,18 +97,22 @@ function App() {
           <div className="hint">Optional: run <code>npm run server</code> with <code>OPENAI_API_KEY</code> and <code>OPENAI_MODEL</code> on your computer. The browser never receives your API key.</div>
           <button className="outline" onClick={simulate} disabled={busy}>▶ Simulate JSONL stream</button>
           <div className="rule"/>
-          <div className="side-status" role="status"><span className="status-dot"/>{status}</div>
+          <div className="side-status" role="status" aria-live="polite"><span className="status-dot"/>{status}</div>
           {events.length>0&&<div className="events"><label className="field-label">HOST EVENTS</label>{events.map((e,i)=><div className="event" key={i}>{e}</div>)}</div>}
         </section>
         <section className="panel preview"><div className="panel-heading"><span className="step">02</span><div><h2>Live preview</h2><p>Click, type and interact with the generated components</p></div></div>
+          <div className="preview-toolbar"><span>Interactive canvas</span><button type="button" className="toolbar-action" onClick={resetSurface}>↺ Reset state</button></div>
           <div className="preview-stage"><div className="stage-top"><span className="stage-bullet"/><span className="stage-bullet"/><span className="stage-bullet"/><span className="stage-title">{doc.title??'Untitled surface'}</span></div><div className="stage-body"><Surface store={store}/></div></div>
           <div className="note">State changes are local and immediate. Host-only events appear in the left panel.</div>
         </section>
-        <section className="panel codepanel"><div className="panel-heading"><span className="step">03</span><div><h2>Inspect & edit</h2><p>Validate the protocol and apply your changes</p></div></div>
+        <section className="panel codepanel"><div className="panel-heading"><span className="step">03</span><div><h2>Inspect & edit</h2><p>Validate the protocol and apply your changes</p></div><button type="button" className="editor-toggle" onClick={()=>setShowEditor(v=>!v)} aria-expanded={showEditor} aria-controls="json-editor-area">{showEditor?'Collapse':'Expand'}</button></div>
+          <div id="json-editor-area" hidden={!showEditor}>
           <div className="editor-header"><span>surface.json</span><span className={validation.valid?'valid':'invalid'}>{validation.valid?'✓ Valid':'✕ Invalid'}</span></div>
           <textarea aria-label="JSON document editor" className="json-editor" spellCheck="false" value={editor} onChange={e=>setEditor(e.target.value)}/>
           {!validation.valid&&<div className="validation-error">{validation.errors?.[0]}</div>}
           <button className="primary" onClick={applyJson} disabled={!validation.valid}>Apply JSON →</button>
+          <button type="button" className="outline" onClick={downloadJson}>↓ Export surface.json</button>
+          </div>
           <p className="footnote">No JSX evaluation. All nodes and actions are validated before rendering.</p>
         </section>
       </div>

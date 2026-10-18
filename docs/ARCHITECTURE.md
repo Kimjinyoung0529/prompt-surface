@@ -49,3 +49,7 @@ All writes replace the `state` object or document immutably. `revision` incremen
 ## Not currently supported
 
 There is no visual drag/drop authoring, untrusted CSS/JS execution, background automation, image/video generation, managed LLM API proxy, websocket service, theme editor, or npm publication workflow. There is a local-only example AI server under `examples/playground/`, which must not be deployed unchanged. These may be added in future releases.
+
+## Browser verification (v0.2.1)
+
+`examples/playground/tests/studio.spec.js` launches the actual React app via Vite and Playwright/Chromium. Both 1440px desktop and 390px mobile projects cover state, actions, editor validation, streaming and width overflow. CI saves browser-created screenshots and a built app artifact for inspection. A successful protocol unit test alone does not certify full cross-browser accessibility or production security.
