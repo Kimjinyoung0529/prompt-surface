@@ -84,11 +84,11 @@ export function Surface({ document, store: suppliedStore, registry = {}, onEvent
         p.label ? h('span',null,text(p.label)) : null,
         h('textarea',{className:'ps-input','aria-label':controlName('Text area'),rows:clamp(p.rows??3,1,12),value:inputValue??'',placeholder:text(p.placeholder),onChange:e=>change(e.target.value)}));
       case 'checkbox': return h('label',{key:id,className:'ps-checkbox'},
-        h('input',{type:'checkbox',checked:!!inputValue,onChange:e=>change(e.target.checked)}),
+        h('input',{type:'checkbox','aria-label':controlName('Checkbox'),checked:!!inputValue,onChange:e=>change(e.target.checked)}),
         h('span',null,text(p.label)));
       case 'slider': return h('label',{key:id,className:'ps-field'},
-        h('span',null,`${text(p.label)}${p.showValue === false ? '' : `: ${inputValue}`}`),
-        h('input',{type:'range',className:'ps-range',min:p.min??0,max:p.max??100,step:p.step??1,value:inputValue,onChange:e=>change(Number(e.target.value))}));
+        h('span',null,text(p.label),p.showValue === false ? null : h('span',{'aria-hidden':true},`${p.label ? ': ' : ''}${inputValue}`)),
+        h('input',{type:'range',className:'ps-range','aria-label':controlName('Slider'),min:p.min??0,max:p.max??100,step:p.step??1,value:inputValue,onChange:e=>change(Number(e.target.value))}));
       case 'select': return h('label',{key:id,className:'ps-field'},
         p.label ? h('span',null,text(p.label)) : null,
         h('select',{className:'ps-input','aria-label':controlName('Select'),value:inputValue,onChange:e=>change(e.target.value)},
@@ -98,7 +98,7 @@ export function Surface({ document, store: suppliedStore, registry = {}, onEvent
             return h('option',{key:i,value},label);
           })));
       case 'switch': return h('label',{key:id,className:'ps-switch'},
-        h('input',{type:'checkbox',role:'switch',checked:!!inputValue,onChange:e=>change(e.target.checked)}),
+        h('input',{type:'checkbox',role:'switch','aria-label':controlName('Switch'),checked:!!inputValue,onChange:e=>change(e.target.checked)}),
         h('span',{className:'ps-switch-track','aria-hidden':true}),
         h('span',null,text(p.label)));
       case 'radio-group': return h('fieldset',{key:id,className:'ps-radio-group'},

@@ -16,3 +16,10 @@ test('unlabeled controls without hints receive a stable generic name', () => {
   assert.equal(formControlName({},'Text input'), 'Text input');
   assert.equal(formControlName({ariaLabel:'   ',placeholder:''},'Text area'), 'Text area');
 });
+
+test('unlabeled toggles and sliders receive stable accessible names', () => {
+  assert.equal(formControlName({bind:'prefs.enabled'},'Checkbox'), 'enabled');
+  assert.equal(formControlName({ariaLabel:'  Quiet mode ',bind:'prefs.quiet'},'Switch'), 'Quiet mode');
+  assert.equal(formControlName({},'Slider'), 'Slider');
+  assert.equal(formControlName({label:'Volume',ariaLabel:'Override'},'Slider'), undefined);
+});
