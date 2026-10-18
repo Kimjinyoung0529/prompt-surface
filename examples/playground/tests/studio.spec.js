@@ -9,12 +9,12 @@ test('renders and operates live interactive state', async ({ page }) => {
   await page.getByLabel('Your name').fill('Alex');
   await expect(page.getByText('Hi Alex!')).toBeVisible();
   await page.getByRole('checkbox', {name:'I finished cooking'}).check();
-  await expect(page.getByText('Dinner is ready!')).toBeVisible();
+  await expect(page.locator('.ps-badge').getByText('Dinner is ready!', {exact:true})).toBeVisible();
   await page.getByRole('button', {name:'Submit recipe'}).click();
   await expect(page.getByText('recipe.submit')).toBeVisible();
   await page.getByRole('button', {name:'Reset state'}).click();
   await expect(page.getByText('Hi Chef!')).toBeVisible();
-  await expect(page.getByText('Dinner is ready!')).toHaveCount(0);
+  await expect(page.locator('.ps-badge').getByText('Dinner is ready!', {exact:true})).toHaveCount(0);
 });
 
 test('switches presets, validates malformed JSON and streams updates', async ({ page }) => {
