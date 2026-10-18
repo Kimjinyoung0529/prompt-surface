@@ -42,6 +42,24 @@ test('immutable paths, interpolation and conditions',()=>{
   assert.throws(()=>writePath({},'__proto__.polluted',true),SurfaceError);
   assert.equal({}.polluted,undefined);
 });
+test('numeric conditions reject implicit coercion and invalid document patches',()=>{
+  const document=fixture();
+  document.root.children[0].when={path:'servings',op:'gte',value:'2'};
+  assert.equal(validateSurface(document).valid,false);
+  document.root.children[0].when.value=null;
+  assert.equal(validateSurface(document).valid,false);
+  document.root.children[0].when.value=2;
+  assert.equal(validateSurface(document).valid,true);
+  assert.equal(evaluateCondition({path:'servings',op:'gte',value:2},fixture().state),true);
+  assert.equal(evaluateCondition({path:'servings',op:'gte',value:'2'},fixture().state),false);
+  assert.equal(evaluateCondition({path:'servings',op:'gt',value:2},{servings:'3'}),false);
+  assert.equal(evaluateCondition({path:'servings',op:'lt',value:2},{servings:1}),true);
+  const store=createSurfaceStore(fixture());
+  assert.throws(()=>store.patch({op:'add',path:'/root/children/0/when',value:{path:'servings',op:'gte',value:'2'}}),SurfaceError);
+  assert.equal(store.getSnapshot().revision,0);
+  assert.equal(store.getSnapshot().document.root.children[0].when,undefined);
+});
+
 test('store dispatch updates and events',()=>{
   const events=[];
   const store=createSurfaceStore(fixture(),{onEvent:e=>events.push(e)});

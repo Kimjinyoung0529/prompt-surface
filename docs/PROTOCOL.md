@@ -4,7 +4,7 @@ A document consists of `{version:"1.0", title?, state:{}, root:Node}`. Nodes are
 
 ## Conditions
 
-`when` supports `{path, op, value}` with `truthy`, `falsy`, `eq`, `neq`, `gt`, `gte`, `lt`, `lte`. Missing conditions mean visible.
+`when` supports `{path, op, value}` with `truthy`, `falsy`, `eq`, `neq`, `gt`, `gte`, `lt`, `lte`. Missing conditions mean visible. The numeric comparison operators (`gt`, `gte`, `lt`, `lte`) require a finite JSON number in `value` and compare only against numeric state values; numeric strings are **not** coerced. Invalid numeric conditions reject the document or patch.
 
 ## State binding
 

@@ -123,6 +123,7 @@ export function validateSurface(input) {
         if (!isPlainObject(node.when) || typeof node.when.path !== 'string') throw new SurfaceError('Invalid when condition');
         safeSegments(node.when.path);
         if (node.when.op !== undefined && !['eq','neq','truthy','falsy','gt','gte','lt','lte'].includes(node.when.op)) throw new SurfaceError('Invalid condition operator');
+        if (['gt','gte','lt','lte'].includes(node.when.op) && (typeof node.when.value !== 'number' || !Number.isFinite(node.when.value))) throw new SurfaceError('Numeric condition requires a finite number');
       }
       if (node.on !== undefined) {
         if (!isPlainObject(node.on)) throw new SurfaceError('Node on must be an object');
@@ -152,15 +153,18 @@ export function assertSurface(document) {
 export function evaluateCondition(condition, state) {
   if (!condition) return true;
   const value = readPath(state, condition.path);
+  // Never coerce model-provided strings or null to numbers in range checks.
+  const numeric = typeof value === 'number' && Number.isFinite(value) &&
+    typeof condition.value === 'number' && Number.isFinite(condition.value);
   switch (condition.op ?? 'truthy') {
     case 'eq': return Object.is(value, condition.value);
     case 'neq': return !Object.is(value, condition.value);
     case 'truthy': return Boolean(value);
     case 'falsy': return !value;
-    case 'gt': return typeof value === 'number' && value > condition.value;
-    case 'gte': return typeof value === 'number' && value >= condition.value;
-    case 'lt': return typeof value === 'number' && value < condition.value;
-    case 'lte': return typeof value === 'number' && value <= condition.value;
+    case 'gt': return numeric && value > condition.value;
+    case 'gte': return numeric && value >= condition.value;
+    case 'lt': return numeric && value < condition.value;
+    case 'lte': return numeric && value <= condition.value;
     default: return false;
   }
 }
