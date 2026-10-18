@@ -6,6 +6,7 @@ Prompt Surface handles **untrusted data from language models**. It does *not* pr
 
 - JSON-only input; no `eval`, `new Function`, `dangerouslySetInnerHTML`, arbitrary event handler source, or dynamically loaded JS.
 - `assertSurface` validates the entire tree, node count (500), nesting depth (32), JSON values and state/action paths.
+- Complete documents are capped at **1 MiB of UTF-8 serialized JSON bytes** (not JavaScript string length). Oversized documents and patches that would exceed this limit are rejected before committing changes.
 - Prototype-polluting keys (`__proto__`, `prototype`, `constructor`) are rejected in JSON objects, paths and patches.
 - The React renderer uses a limited property allowlist, rather than forwarding arbitrary model-controlled DOM attributes.
 - Images accept only http(s) URLs; they must still be covered by your CSP and network/content policy.

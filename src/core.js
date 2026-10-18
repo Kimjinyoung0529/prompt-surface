@@ -101,8 +101,8 @@ function checkAction(action) {
 export function validateSurface(input) {
   try {
     validateJson(input, 'document');
-    const length = JSON.stringify(input).length;
-    if (length > MAX_DOCUMENT_BYTES) throw new SurfaceError('Document exceeds 1 MiB');
+    const byteLength = BufferByteLength(JSON.stringify(input));
+    if (byteLength > MAX_DOCUMENT_BYTES) throw new SurfaceError('Document exceeds 1 MiB');
     if (!isPlainObject(input)) throw new SurfaceError('Document must be an object');
     if (input.version !== SURFACE_VERSION) throw new SurfaceError(`Version must be ${SURFACE_VERSION}`);
     if (!isPlainObject(input.state)) throw new SurfaceError('State must be an object');

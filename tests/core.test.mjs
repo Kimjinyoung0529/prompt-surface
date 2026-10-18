@@ -31,6 +31,26 @@ test('rejects unsupported actions and non-JSON values',()=>{
   const invalid=fixture(); invalid.state.x=Infinity;
   assert.equal(validateSurface(invalid).valid,false);
 });
+test('document size limit measures UTF-8 bytes and rejects oversized patches atomically',()=>{
+  const ascii = fixture();
+  const emptyLength = JSON.stringify({...ascii,title:''}).length;
+  ascii.title = 'a'.repeat(1024 * 1024 - emptyLength);
+  assert.equal(validateSurface(ascii).valid, true, 'exactly 1 MiB of ASCII JSON is valid');
+  ascii.title += 'a';
+  assert.equal(validateSurface(ascii).valid, false, 'more than 1 MiB is rejected');
+
+  const unicode = fixture();
+  unicode.title = '한'.repeat(350_000); // < 1 MiB UTF-16 units, > 1 MiB UTF-8 bytes
+  assert.ok(JSON.stringify(unicode).length < 1024 * 1024);
+  assert.equal(validateSurface(unicode).valid, false);
+  assert.throws(()=>createSurfaceStore(unicode), SurfaceError);
+
+  const store = createSurfaceStore(fixture());
+  const before = store.getSnapshot();
+  assert.throws(()=>store.patch({op:'replace',path:'/title',value:unicode.title}), SurfaceError);
+  assert.equal(store.getSnapshot(), before, 'failed patch must not change state or revision');
+});
+
 test('immutable paths, interpolation and conditions',()=>{
   const source={nested:{count:1}};
   const edited=writePath(source,'nested.count',4);
