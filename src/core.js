@@ -229,7 +229,11 @@ export function createSurfaceStore(initialDocument, options = {}) {
     getSnapshot: () => snapshot,
     subscribe: fn => { listeners.add(fn); return () => listeners.delete(fn); },
     setState: (path, value) => {
-      document = { ...document, state: writePath(document.state, path, value) };
+      // User input and actions must obey the same size/shape limits as patches.
+      // Validate before committing so a rejected update leaves the store intact.
+      const next = { ...document, state: writePath(document.state, path, value) };
+      assertSurface(next);
+      document = next;
       notify();
     },
     dispatch: (action, event) => {
@@ -255,7 +259,18 @@ export function createSurfaceStore(initialDocument, options = {}) {
     },
     dispatchAll: (actions, event) => {
       if (!Array.isArray(actions)) throw new SurfaceError('Actions must be an array');
-      for (const action of actions) api.dispatch(action, event);
+      // Stage every action on an isolated store. No state update, listener
+      // notification or host event escapes if any action fails validation.
+      const pendingEvents = [];
+      const staged = createSurfaceStore(document, { onEvent: emitted => pendingEvents.push(emitted) });
+      for (const action of actions) staged.dispatch(action, event);
+      if (staged.getSnapshot().revision > 0) {
+        document = staged.getSnapshot().document;
+        notify();
+      }
+      // Emit only after successful validation and commit. Each event retains
+      // the state snapshot it observed at its position in the action list.
+      for (const emitted of pendingEvents) options.onEvent?.(emitted);
     },
     replaceDocument: next => { document = copyJson(assertSurface(next)); notify(); },
     patch: operation => { document = patchSurface(document, operation); notify(); },

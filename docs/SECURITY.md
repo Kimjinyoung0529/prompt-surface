@@ -12,6 +12,7 @@ Prompt Surface handles **untrusted data from language models**. It does *not* pr
 - A stream line/frame is size limited (default 256 KiB), and browser stream consumption has an additional total byte cap (default 4 MiB). It must be valid JSON before an event is applied.
 - SSE only accepts Prompt Surface event JSON in `data:` fields; it is not a generic provider event interpreter. Browser cancellation propagates via `AbortSignal`.
 - Patches clone and validate the resulting whole document. On failure, nothing is committed.
+- State writes and action batches now revalidate the full document and commit atomically; rejected batches do not emit host events. A host callback throwing after commit cannot undo that callback's external side effects.
 
 ## Responsibilities of the host application
 

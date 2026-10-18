@@ -23,6 +23,21 @@ Actions are data, never JavaScript. Click handlers look like `{on:{click:[...]}}
 
 The host has to handle `emit` with its own authorization and side-effect logic. `event.state` contains the current browser-side form state.
 
+### Transactional action batches and state limits
+
+`store.setState(path, value)` and individual `dispatch` updates revalidate the entire
+resulting document before notifying subscribers. Updates exceeding the 1 MiB
+document limit, producing non-finite numbers, or otherwise invalidating the
+protocol throw `SurfaceError` and leave the previous snapshot unchanged.
+
+`store.dispatchAll(actions, event)` is **atomic** for state changes: it stages all
+actions and commits once (one subscriber notification) only when every action
+succeeds. `emit` callbacks are deferred until after a successful commit; on
+failure, no events are emitted. Each emitted event includes the state at its
+position in the action list, even if later actions change state. Note that
+external side effects in an `onEvent` handler cannot be rolled back if that
+handler itself throws; authorize and handle those separately.
+
 ## Streaming protocol
 
 The transport is NDJSON (one JSON object per line) in UTF-8.

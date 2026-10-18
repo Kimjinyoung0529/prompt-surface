@@ -98,3 +98,53 @@ test('generated system prompt describes safe protocol',()=>{
   assert.match(prompt,/data-only/);
   assert.match(prompt,/version/);
 });
+
+
+test('state updates reject oversized and non-finite results without mutation or notifications',()=>{
+  const store=createSurfaceStore(fixture());
+  const original=store.getSnapshot();
+  let notices=0;
+  store.subscribe(()=>notices++);
+  assert.throws(()=>store.setState('oversized','x'.repeat(1024*1024)),SurfaceError);
+  assert.strictEqual(store.getSnapshot(),original);
+  assert.equal(notices,0);
+  store.setState('servings',1e308);
+  const beforeOverflow=store.getSnapshot();
+  assert.throws(()=>store.dispatch({type:'increment',path:'servings',by:1e308}),SurfaceError);
+  assert.strictEqual(store.getSnapshot(),beforeOverflow);
+  assert.equal(notices,1);
+  assert.equal(validateSurface(store.getSnapshot().document).valid,true);
+});
+
+test('dispatchAll is atomic and defers host events until after commit',()=>{
+  const events=[];
+  const store=createSurfaceStore(fixture(),{onEvent:emitted=>events.push(emitted)});
+  let notices=0;
+  store.subscribe(()=>notices++);
+  const initial=store.getSnapshot();
+  assert.throws(()=>store.dispatchAll([
+    {type:'increment',path:'servings',by:1},
+    {type:'emit',name:'checkout'},
+    {type:'removeAt',path:'items',index:-1}
+  ]),SurfaceError);
+  assert.strictEqual(store.getSnapshot(),initial);
+  assert.equal(notices,0);
+  assert.deepEqual(events,[]);
+
+  store.dispatchAll([
+    {type:'increment',path:'servings',by:1},
+    {type:'emit',name:'checkout'},
+    {type:'toggle',path:'accepted'}
+  ],'click');
+  assert.equal(store.getSnapshot().state.servings,3);
+  assert.equal(store.getSnapshot().state.accepted,true);
+  assert.equal(notices,1);
+  assert.equal(events.length,1);
+  assert.equal(events[0].name,'checkout');
+  assert.equal(events[0].event,'click');
+  assert.equal(events[0].state.servings,3);
+  assert.equal(events[0].state.accepted,false);
+  store.dispatchAll([{type:'emit',name:'ping'}]);
+  assert.equal(notices,1);
+  assert.equal(events.length,2);
+});

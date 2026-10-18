@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — 2026-10-18
+
+- Hardened store state writes against oversized documents and non-finite results.
+- Made `dispatchAll` transactional: no partial state or host events on failure; one notification per successful state-changing batch.
+- Added regression tests and protocol/security documentation for batch semantics.
+
 ## 0.2.1 — 2026-10-18
 
 - Added Chromium Playwright end-to-end tests for actual React Studio on desktop and mobile; automatic PNG screenshots included as GitHub Actions artifacts.
