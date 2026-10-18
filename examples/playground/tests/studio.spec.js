@@ -45,7 +45,8 @@ test('interactive gallery supports tabs, stateful controls, accordion and carous
   await expect(page.getByText('Your choice: 7 × vanilla')).toBeVisible();
   await page.getByRole('button', {name:'chocolate'}).click();
   await expect(page.getByText('Your choice: 7 × chocolate')).toBeVisible();
-  await page.getByRole('switch', {name:'Send me updates'}).uncheck();
+  await page.locator('.ps-switch').click();
+  await expect(page.getByRole('switch', {name:'Send me updates'})).not.toBeChecked();
   await page.getByRole('tab', {name:'Content'}).click();
   await expect(page.getByRole('table')).toBeVisible();
   await expect(page.getByText('Interactive', {exact:true})).toBeVisible();
@@ -53,7 +54,7 @@ test('interactive gallery supports tabs, stateful controls, accordion and carous
   await page.getByRole('button', {name:'Next slide'}).click();
   await expect(page.getByRole('heading', {name:'02 · Interact'})).toBeVisible();
   await page.getByRole('button', {name:'Can I use another model?'}).click();
-  await expect(page.getByText('The protocol is a JSON document, independent from your model provider.')).toBeVisible();
+  await expect(page.locator('.preview-stage .ps-surface').getByText('The protocol is a JSON document, independent from your model provider.')).toBeVisible();
   await page.getByRole('button', {name:'Send order'}).click();
   await expect(page.locator('.events .event').getByText('order.submit')).toBeVisible();
 });
@@ -62,13 +63,13 @@ test('travel planner tabs, radio, accordion and theme are usable', async ({ page
   await page.getByRole('button',{name:'Travel planner'}).click();
   await expect(page.getByRole('heading',{name:'Your weekend in Seoul'})).toBeVisible();
   await page.getByRole('button',{name:'⚡ Active'}).click();
-  await expect(page.getByText('Active pace selected')).toBeVisible();
+  await expect(page.locator('.preview-stage .ps-surface').getByText('Active pace selected')).toBeVisible();
   await page.getByRole('radio',{name:'🚕 Taxi'}).check();
   await page.getByRole('tab',{name:'Costs'}).click();
   await expect(page.getByRole('table')).toBeVisible();
   await expect(page.getByText('₩40,000')).toBeVisible();
   await page.getByRole('button',{name:'Is this an official reservation?'}).click();
-  await expect(page.getByText('No. This is a sample itinerary UI with illustrative costs, not a real booking.')).toBeVisible();
+  await expect(page.locator('.preview-stage .ps-surface').getByText('No. This is a sample itinerary UI with illustrative costs, not a real booking.')).toBeVisible();
   await page.getByRole('button',{name:'Toggle preview theme'}).click();
   await expect(page.locator('.ps-surface[data-ps-theme="dark"]')).toBeVisible();
   await page.getByRole('button',{name:'Save itinerary'}).click();
@@ -79,11 +80,11 @@ test('knowledge quiz conditional content and controls', async ({ page }) => {
   await page.getByRole('button',{name:'Knowledge quiz'}).click();
   await expect(page.getByRole('heading',{name:'How do stars shine?'})).toBeVisible();
   await page.getByRole('radio',{name:'Nuclear fusion'}).check();
-  await expect(page.getByText('Selected: Nuclear fusion')).toBeVisible();
+  await expect(page.locator('.preview-stage .ps-surface').getByText('Selected: Nuclear fusion')).toBeVisible();
   await page.getByRole('button',{name:'Check answer'}).click();
-  await expect(page.getByText('Explanation')).toBeVisible();
+  await expect(page.locator('.preview-stage .ps-surface').getByText('Explanation')).toBeVisible();
   await page.getByRole('button',{name:'Start over'}).click();
-  await expect(page.getByText('Explanation')).toHaveCount(0);
+  await expect(page.locator('.preview-stage .ps-surface').getByText('Explanation')).toHaveCount(0);
 });
 
 test('unsafe javascript links are not rendered', async ({ page }) => {
