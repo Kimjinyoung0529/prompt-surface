@@ -3,6 +3,7 @@ import * as React from 'react';
 import { createSurfaceStore, evaluateCondition, interpolate, readPath } from './core.js';
 import { chartAccessibleDescription } from './chart-a11y.js';
 import { formControlName } from './form-a11y.js';
+import { selectedTabValue } from './tab-a11y.js';
 
 const h = React.createElement;
 const SurfaceContext = React.createContext(null);
@@ -111,7 +112,7 @@ export function Surface({ document, store: suppliedStore, registry = {}, onEvent
           onClick:()=>change(option.value)},text(option.label))));
       case 'tabs': {
         const options = optionsOf(p.options);
-        const selected = String(inputValue || p.defaultValue || options[0]?.value || '');
+        const selected = selectedTabValue(options, inputValue, p.defaultValue);
         const panel = (node.children??[]).find(child=>child.type==='tab-panel' && String(child.props?.value)===selected);
         return h('div',{key:id,className:'ps-tabs'},
           h('div',{role:'tablist','aria-label':text(p.label??'Tabs'),className:'ps-tab-list'},
