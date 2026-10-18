@@ -1,0 +1,40 @@
+.ps-surface {
+  --ps-bg: #fff; --ps-fg: #152235; --ps-muted: #66758b;
+  --ps-border: #dce3ee; --ps-accent: #5169d8; --ps-soft: #f4f6fb;
+  color: var(--ps-fg); font: 400 14px/1.5 Inter, system-ui, sans-serif;
+  width: 100%; box-sizing: border-box;
+}
+.ps-surface *, .ps-surface *::before, .ps-surface *::after { box-sizing: border-box; }
+.ps-column { display: flex; flex-direction: column; min-width: 0; }
+.ps-row { display: flex; flex-flow: row wrap; align-items: center; min-width: 0; }
+.ps-grid { display: grid; grid-template-columns: repeat(var(--ps-cols,2), minmax(0, 1fr)); min-width: 0; }
+@media (max-width: 550px) { .ps-grid { grid-template-columns: 1fr; } }
+.ps-card { background: var(--ps-bg); border: 1px solid var(--ps-border); border-radius: 16px; padding: 18px; min-width: 0; }
+.ps-heading { margin: 0; font-size: 1.4em; letter-spacing: -.025em; line-height: 1.25; }
+.ps-text { margin: 0; overflow-wrap: anywhere; }
+.ps-badge { display: inline-flex; align-items: center; padding: 3px 9px; background: var(--ps-soft); color: var(--ps-fg); border-radius: 100px; font-size: .84em; font-weight: 600; }
+.ps-divider { border: 0; border-top: 1px solid var(--ps-border); width: 100%; margin: 8px 0; }
+.ps-button { appearance: none; border: 0; border-radius: 9px; background: var(--ps-accent); color: #fff; font: inherit; font-weight: 600; padding: 9px 14px; cursor: pointer; }
+.ps-button:hover:not(:disabled) { filter: brightness(.94); }
+.ps-button:disabled { opacity: .48; cursor: not-allowed; }
+.ps-field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.ps-field > span { color: var(--ps-fg); font-size: .9em; font-weight: 600; }
+.ps-input { width: 100%; min-width: 0; min-height: 37px; font: inherit; padding: 8px 10px; color: var(--ps-fg); background: var(--ps-bg); border: 1px solid var(--ps-border); border-radius: 8px; }
+.ps-range { accent-color: var(--ps-accent); width: 100%; }
+.ps-checkbox { display: inline-flex; gap: 10px; align-items: center; cursor: pointer; }
+.ps-checkbox input { width: 17px; height: 17px; accent-color: var(--ps-accent); }
+.ps-progress-group { display: flex; flex-direction: column; gap: 6px; }
+.ps-progress { width: 100%; height: 12px; accent-color: var(--ps-accent); }
+.ps-metric { display: flex; flex-direction: column; background: var(--ps-soft); padding: 14px; border-radius: 12px; }
+.ps-metric-label, .ps-metric-description { color: var(--ps-muted); font-size: .87em; }
+.ps-metric-value { font-size: 1.7em; font-weight: 750; }
+.ps-image { display: block; width: 100%; height: auto; border-radius: 10px; object-fit: cover; }
+.ps-chart { margin: 0; width: 100%; min-width: 0; }
+.ps-chart figcaption { font-weight: 650; margin: 0 0 8px; }
+.ps-chart svg { width: 100%; height: auto; overflow: visible; }
+.ps-chart-axis { stroke: var(--ps-border); stroke-width: 1.5; }
+.ps-chart-bar, .ps-chart-dot { fill: var(--ps-accent); }
+.ps-chart-line { stroke: var(--ps-accent); }
+.ps-chart-label { fill: var(--ps-muted); font-size: 11px; }
+.ps-unknown { color: var(--ps-muted); background: var(--ps-soft); border-radius: 8px; padding: 10px; }
+@media (prefers-reduced-motion: no-preference) { .ps-button { transition: filter .15s ease; } }

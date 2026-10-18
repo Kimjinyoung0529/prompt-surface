@@ -1,0 +1,15 @@
+{
+  "version": "1.0", "title": "Sales Dashboard",
+  "state": {"region": "all", "chart": [{"label":"Mon","value":18},{"label":"Tue","value":34},{"label":"Wed","value":29},{"label":"Thu","value":41},{"label":"Fri","value":51}]},
+  "root": {"type":"column","props":{"gap":16},"children":[
+    {"type":"heading","props":{"text":"Weekly analytics","level":2}},
+    {"type":"grid","props":{"columns":3,"gap":10},"children":[
+      {"type":"metric","props":{"label":"Revenue","value":"$54,200","description":"This week"}},
+      {"type":"metric","props":{"label":"Orders","value":"632"}},
+      {"type":"metric","props":{"label":"Conversion","value":"4.8%"}}
+    ]},
+    {"type":"select","bind":"region","props":{"label":"Region","options":[{"label":"All","value":"all"},{"label":"Asia","value":"asia"},{"label":"Europe","value":"eu"}]}},
+    {"type":"card","children":[{"type":"bar-chart","props":{"title":"Daily orders","dataPath":"chart"}}]},
+    {"type":"card","children":[{"type":"line-chart","props":{"title":"Trend","dataPath":"chart"}}]}
+  ]}
+}

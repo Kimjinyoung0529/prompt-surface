@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "title": "Interactive Recipe",
+  "state": {"servings": 2, "complete": false, "name": "Chef"},
+  "root": {
+    "id": "recipe-root", "type": "column", "props": {"gap": 16}, "children": [
+      {"type": "heading", "props": {"level": 2, "text": "Pasta for {{servings}} people"}},
+      {"type": "text", "props": {"text": "Hi {{name}}! Adjust the portions, then mark your dinner done."}},
+      {"type": "card", "children": [
+        {"type": "column", "props": {"gap": 12}, "children": [
+          {"type": "slider", "bind": "servings", "props": {"label": "Portions", "min": 1, "max": 8, "step": 1}},
+          {"type": "input", "bind": "name", "props": {"label": "Your name", "placeholder": "Name"}},
+          {"type": "checkbox", "bind": "complete", "props": {"label": "I finished cooking"}},
+          {"type": "badge", "when": {"path": "complete", "op": "truthy"}, "props": {"text": "Dinner is ready!"}},
+          {"type": "button", "props": {"label": "Submit recipe"}, "on": {"click": [{"type": "emit", "name": "recipe.submit", "payload": {"source": "recipe"}}]}}
+        ]}
+      ]}
+    ]
+  }
+}

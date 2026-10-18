@@ -1,0 +1,24 @@
+{
+  "name": "prompt-surface",
+  "version": "0.1.0",
+  "description": "Model-agnostic, schema-driven generative UI runtime for React. Safe actions, streaming patches, and interactive components.",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": ["./src/styles.css"],
+  "files": ["src", "README.md", "LICENSE"],
+  "exports": {
+    ".": {"types": "./src/index.d.ts", "import": "./src/index.js"},
+    "./react": {"types": "./src/react.d.ts", "import": "./src/react.js"},
+    "./styles.css": "./src/styles.css"
+  },
+  "peerDependencies": {"react": ">=18.2.0"},
+  "peerDependenciesMeta": {"react": {"optional": true}},
+  "engines": {"node": ">=18"},
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "npm run test && node --check src/core.js && node --check src/react.js && node --check src/index.js && tsc --noEmit --strict --allowJs false --skipLibCheck --target es2022 --module nodenext --moduleResolution nodenext src/index.d.ts",
+    "pack:dry": "npm pack --dry-run",
+    "example": "node examples/terminal-example.mjs"
+  },
+  "keywords": ["generative-ui", "react", "llm", "json-renderer", "ai", "streaming", "interactive-ui"]
+}

@@ -1,0 +1,11 @@
+import { readFileSync } from 'node:fs';
+import { createSurfaceStore, createJSONLDecoder } from '../src/index.js';
+const document=JSON.parse(readFileSync(new URL('./recipe.json',import.meta.url),'utf8'));
+const store=createSurfaceStore(document,{onEvent:event=>console.log('Host event:',event.name,event.payload)});
+store.subscribe(()=>console.log('Updated state:',store.getSnapshot().state));
+store.dispatch({type:'increment',path:'servings',by:1});
+store.dispatch({type:'toggle',path:'complete'});
+const decoder=createJSONLDecoder(event=>store.applyEvent(event));
+decoder.push(JSON.stringify({type:'patch',op:'replace',path:'/root/children/0/props/text',value:'Your updated recipe'})+'\n');
+decoder.finish();
+console.log('Latest title:',store.getSnapshot().document.root.children[0].props.text);
