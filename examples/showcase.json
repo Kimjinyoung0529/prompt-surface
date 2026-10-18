@@ -1,0 +1,393 @@
+{
+  "version": "1.0",
+  "title": "UI Component Gallery",
+  "state": {
+    "count": 4,
+    "theme": "light",
+    "flavor": "vanilla",
+    "email": "",
+    "quantity": 3,
+    "enabled": true,
+    "tab": "components",
+    "slide": 0,
+    "faq": "",
+    "rating": "good"
+  },
+  "root": {
+    "type": "column",
+    "props": {
+      "gap": 14
+    },
+    "children": [
+      {
+        "type": "badge",
+        "props": {
+          "text": "PROMPT SURFACE · UI SYSTEM"
+        }
+      },
+      {
+        "type": "heading",
+        "props": {
+          "text": "An interface made of data.",
+          "level": 2
+        }
+      },
+      {
+        "type": "text",
+        "props": {
+          "text": "Every control you see is described by JSON and rendered with safe React components."
+        }
+      },
+      {
+        "type": "grid",
+        "props": {
+          "columns": 3,
+          "gap": 10
+        },
+        "children": [
+          {
+            "type": "metric",
+            "props": {
+              "label": "Components",
+              "value": "33",
+              "description": "Built-in primitives"
+            }
+          },
+          {
+            "type": "metric",
+            "props": {
+              "label": "Model API",
+              "value": "Any",
+              "description": "Backend controlled"
+            }
+          },
+          {
+            "type": "metric",
+            "props": {
+              "label": "Code eval",
+              "value": "None",
+              "description": "Safe by default"
+            }
+          }
+        ]
+      },
+      {
+        "type": "tabs",
+        "id": "gallery-tabs",
+        "bind": "tab",
+        "props": {
+          "options": [
+            {
+              "label": "Controls",
+              "value": "components"
+            },
+            {
+              "label": "Content",
+              "value": "content"
+            }
+          ]
+        },
+        "children": [
+          {
+            "type": "tab-panel",
+            "props": {
+              "value": "components"
+            },
+            "children": [
+              {
+                "type": "card",
+                "children": [
+                  {
+                    "type": "column",
+                    "props": {
+                      "gap": 14
+                    },
+                    "children": [
+                      {
+                        "type": "heading",
+                        "props": {
+                          "text": "Customize your order",
+                          "level": 3
+                        }
+                      },
+                      {
+                        "type": "input",
+                        "bind": "email",
+                        "props": {
+                          "label": "Email",
+                          "inputType": "email",
+                          "placeholder": "name@example.com"
+                        }
+                      },
+                      {
+                        "type": "slider",
+                        "bind": "quantity",
+                        "props": {
+                          "label": "Quantity",
+                          "min": 1,
+                          "max": 10
+                        }
+                      },
+                      {
+                        "type": "segmented-control",
+                        "bind": "flavor",
+                        "props": {
+                          "label": "Flavor",
+                          "options": [
+                            "vanilla",
+                            "chocolate",
+                            "strawberry"
+                          ]
+                        }
+                      },
+                      {
+                        "type": "switch",
+                        "bind": "enabled",
+                        "props": {
+                          "label": "Send me updates"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "props": {
+                          "text": "Your choice: {{quantity}} × {{flavor}}"
+                        }
+                      },
+                      {
+                        "type": "button",
+                        "props": {
+                          "label": "Send order"
+                        },
+                        "on": {
+                          "click": [
+                            {
+                              "type": "emit",
+                              "name": "order.submit"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tab-panel",
+            "props": {
+              "value": "content"
+            },
+            "children": [
+              {
+                "type": "card",
+                "children": [
+                  {
+                    "type": "column",
+                    "props": {
+                      "gap": 14
+                    },
+                    "children": [
+                      {
+                        "type": "heading",
+                        "props": {
+                          "text": "Structured content",
+                          "level": 3
+                        }
+                      },
+                      {
+                        "type": "table",
+                        "props": {
+                          "columns": [
+                            {
+                              "key": "name",
+                              "label": "Component"
+                            },
+                            {
+                              "key": "state",
+                              "label": "Support"
+                            }
+                          ],
+                          "rows": [
+                            {
+                              "name": "Tabs",
+                              "state": "Interactive"
+                            },
+                            {
+                              "name": "Tables",
+                              "state": "Responsive"
+                            },
+                            {
+                              "name": "Charts",
+                              "state": "SVG"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "type": "code",
+                        "props": {
+                          "text": "<Surface document={ui} theme=\"dark\" />"
+                        }
+                      },
+                      {
+                        "type": "callout",
+                        "props": {
+                          "variant": "success",
+                          "title": "State-driven",
+                          "description": "Changes update only the components that depend on the active store."
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "props": {
+          "text": "Slides & disclosure",
+          "level": 3
+        }
+      },
+      {
+        "type": "carousel",
+        "id": "gallery-carousel",
+        "bind": "slide",
+        "props": {
+          "label": "Tour slides"
+        },
+        "children": [
+          {
+            "type": "card",
+            "children": [
+              {
+                "type": "column",
+                "props": {
+                  "gap": 14
+                },
+                "children": [
+                  {
+                    "type": "heading",
+                    "props": {
+                      "text": "01 · Compose",
+                      "level": 3
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "props": {
+                      "text": "Build complex layouts using nested rows, columns and grids."
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "card",
+            "children": [
+              {
+                "type": "column",
+                "props": {
+                  "gap": 14
+                },
+                "children": [
+                  {
+                    "type": "heading",
+                    "props": {
+                      "text": "02 · Interact",
+                      "level": 3
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "props": {
+                      "text": "Bind UI controls to a single immutable state store."
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "card",
+            "children": [
+              {
+                "type": "column",
+                "props": {
+                  "gap": 14
+                },
+                "children": [
+                  {
+                    "type": "heading",
+                    "props": {
+                      "text": "03 · Stream",
+                      "level": 3
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "props": {
+                      "text": "Use JSONL or SSE to patch parts of the document safely."
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "accordion",
+        "id": "gallery-faq",
+        "bind": "faq",
+        "props": {
+          "options": [
+            {
+              "label": "Can I use another model?",
+              "value": "model"
+            },
+            {
+              "label": "Can I add custom React components?",
+              "value": "extend"
+            }
+          ]
+        },
+        "children": [
+          {
+            "type": "tab-panel",
+            "props": {
+              "value": "model"
+            },
+            "children": [
+              {
+                "type": "text",
+                "props": {
+                  "text": "Yes. The protocol is a JSON document, independent from your model provider."
+                }
+              }
+            ]
+          },
+          {
+            "type": "tab-panel",
+            "props": {
+              "value": "extend"
+            },
+            "children": [
+              {
+                "type": "text",
+                "props": {
+                  "text": "Yes. Pass a registry of trusted host functions to the Surface component."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

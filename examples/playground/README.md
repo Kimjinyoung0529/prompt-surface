@@ -37,3 +37,9 @@ npm run test:e2e
 This starts the actual Vite + React app. Each Chromium desktop/mobile test captures a full-page PNG in `test-results/`; the GitHub CI workflow uploads this folder as an artifact. Tests also verify interactive state updates, document switching, JSON editor validation, stream simulation and horizontal overflow. The model API is optional and never used by the browser tests.
 
 Studio offers **Reset state** and **Export surface.json** controls, responsive panels, focus indication, and an optional collapsible JSON inspector.
+
+## New v0.3 gallery
+
+Pick **UI Gallery**, **Travel planner** or **Knowledge quiz** to exercise tabs, switch, slider, radio, carousel, accordion, table and conditional rendering. Toggle `☾ Dark` in the preview toolbar to test scoped dark styling.
+
+The API generation endpoint still returns **one complete validated JSON document**; it is not a token-by-token streaming model connector. JSONL/SSE consumption is available separately and Studio includes a deterministic stream simulation.

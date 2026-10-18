@@ -37,3 +37,19 @@ A decoder reassembles chunk boundaries, parses complete lines and calls the stor
 ## JSON Schema
 
 The bundled [`surface.schema.json`](surface.schema.json) expresses the machine-readable shape. Runtime validation has additional constraints and is authoritative.
+
+## Additional v0.3 renderer node contracts
+
+The core JSON schema is permissive about node types. Host renderers decide which `type` values are supported; Prompt Surface's React renderer includes the following contracts.
+
+- `switch`, `radio-group`, `segmented-control`: set `bind` to state key; supply `props.label`, and for option controls `props.options` (strings or `{label,value}` objects).
+- `tabs`: supply `bind`, `props.options` and `tab-panel` children. Set each panel's `props.value` to a matching option value. Tabs support click and keyboard navigation.
+- `accordion`: supply `bind`, `props.options`, children with `props.value`. A bound string stores the single expanded option (empty string closes all).
+- `carousel`: supply `bind` pointing to a numeric index, with child nodes acting as slides. Navigation wraps around.
+- `table`: supply `props.columns: [{key,label}]`, plus `props.rows` or `props.dataPath` pointing to state. Cells render as text, not HTML.
+- `list`: `props.items` or `props.dataPath`, optionally `props.ordered`.
+- `callout`: `props.title`, `description`, `variant` (`info`, `success`, `warning`, `danger`).
+- `code`/`quote`/`link`: text-only code and quote, and HTTP(S)/safe relative links; `javascript:` is blocked.
+- `spacer`: `props.height` in clamped CSS pixels.
+
+For reusable app integrations, always use unique node IDs. State paths passed through `bind` are validated and guarded against prototype pollution. When JSON is model-generated, authenticate privileged `emit` actions separately; a UI gesture does not grant backend authorization.

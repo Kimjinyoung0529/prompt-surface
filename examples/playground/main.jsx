@@ -5,10 +5,14 @@ import { createSurfaceStore, validateSurface } from 'prompt-surface';
 import { consumeSurfaceStream, parseSurfaceText } from 'prompt-surface/transport';
 import recipe from '../recipe.json';
 import dashboard from '../dashboard.json';
+import planner from '../planner.json';
+import showcase from '../showcase.json';
+import quiz from '../quiz.json';
 import 'prompt-surface/styles.css';
 import './style.css';
 
-const presets = { 'Recipe planner':recipe, 'Dashboard':dashboard };
+const presets = { 'Recipe planner':recipe, 'Dashboard':dashboard, 'Travel planner':planner, 'UI Gallery':showcase, 'Knowledge quiz':quiz };
+const presetIcons = { 'Recipe planner':'🍋', 'Dashboard':'📊', 'Travel planner':'🗺️', 'UI Gallery':'✦', 'Knowledge quiz':'🎓' };
 const clone = obj => JSON.parse(JSON.stringify(obj));
 const initial = clone(recipe);
 
@@ -20,6 +24,7 @@ function App() {
   const [status,setStatus] = useState('Ready — choose a preset, edit JSON, or connect a model');
   const [busy,setBusy] = useState(false);
   const [active,setActive] = useState('Recipe planner');
+  const [theme,setTheme] = useState('light');
   const [showEditor,setShowEditor] = useState(true);
   const store = useMemo(() => createSurfaceStore(initial,{
     onEvent:event=>setEvents(prev=>[`${new Date().toLocaleTimeString()} • ${event.name}`, ...prev].slice(0,8))
@@ -81,15 +86,15 @@ function App() {
   return <div className="studio">
     <a className="skip-link" href="#studio-workspace">Skip to workspace</a>
     <header className="topbar">
-      <div className="brand"><div className="mark">✳</div><div><strong>Prompt Surface</strong><small>STUDIO · 0.2.1</small></div></div>
+      <div className="brand"><div className="mark">✳</div><div><strong>Prompt Surface</strong><small>STUDIO · 0.3.0</small></div></div>
       <div className="top-right"><span className="pill"><span className="live-dot"/> Local development</span><a href="https://github.com/Kimjinyoung0529/prompt-surface" target="_blank" rel="noreferrer">GitHub ↗</a></div>
     </header>
     <main id="studio-workspace">
-      <div className="intro"><div><p className="eyebrow">GENERATIVE UI ENGINE</p><h1>Turn JSON into interactive experiences.</h1><p>A real React renderer, with safe actions, live state and streaming updates. Try it right here.</p></div><div className="version-chip">Version 0.2.1</div></div>
+      <div className="intro"><div><p className="eyebrow">GENERATIVE UI ENGINE</p><h1>Build conversations that become interfaces.</h1><p>Compose responsive, stateful cards, charts, tabs, carousels and forms from validated JSON — no generated code execution.</p></div><div className="version-chip">Version 0.3.0 · 33 components</div></div>
       <div className="workspace">
-        <section className="panel controls"><div className="panel-heading"><span className="step">01</span><div><h2>Create</h2><p>Choose a template or generate a new surface</p></div></div>
+        <section className="panel controls"><div className="panel-heading"><span className="step">01</span><div><h2>Create</h2><p>Explore five fully interactive UI templates</p></div></div>
           <label className="field-label">PRESET DOCUMENTS</label>
-          <div className="presets">{Object.keys(presets).map(name=><button key={name} className={active===name?'preset selected':'preset'} onClick={()=>loadPreset(name)}>{name==='Recipe planner'?'🍋':'📊'} {name}</button>)}</div>
+          <div className="presets">{Object.keys(presets).map(name=><button key={name} className={active===name?'preset selected':'preset'} onClick={()=>loadPreset(name)}>{presetIcons[name]} {name}</button>)}</div>
           <div className="rule"/>
           <label htmlFor="prompt" className="field-label">GENERATE WITH AN AI MODEL</label>
           <textarea id="prompt" className="prompt" value={prompt} onChange={e=>setPrompt(e.target.value)} maxLength={1000}/>
@@ -101,8 +106,8 @@ function App() {
           {events.length>0&&<div className="events"><label className="field-label">HOST EVENTS</label>{events.map((e,i)=><div className="event" key={i}>{e}</div>)}</div>}
         </section>
         <section className="panel preview"><div className="panel-heading"><span className="step">02</span><div><h2>Live preview</h2><p>Click, type and interact with the generated components</p></div></div>
-          <div className="preview-toolbar"><span>Interactive canvas</span><button type="button" className="toolbar-action" onClick={resetSurface}>↺ Reset state</button></div>
-          <div className="preview-stage"><div className="stage-top"><span className="stage-bullet"/><span className="stage-bullet"/><span className="stage-bullet"/><span className="stage-title">{doc.title??'Untitled surface'}</span></div><div className="stage-body"><Surface store={store}/></div></div>
+          <div className="preview-toolbar"><span>Interactive canvas · React</span><div className="toolbar-controls"><button type="button" className="toolbar-action" aria-label="Toggle preview theme" onClick={()=>setTheme(v=>v==='light'?'dark':'light')}>{theme==='light'?'☾ Dark':'☀ Light'}</button><button type="button" className="toolbar-action" onClick={resetSurface}>↺ Reset state</button></div></div>
+          <div className={`preview-stage preview-${theme}`}><div className="stage-top"><span className="stage-bullet"/><span className="stage-bullet"/><span className="stage-bullet"/><span className="stage-title">{doc.title??'Untitled surface'}</span></div><div className="stage-body"><Surface store={store} theme={theme}/></div></div>
           <div className="note">State changes are local and immediate. Host-only events appear in the left panel.</div>
         </section>
         <section className="panel codepanel"><div className="panel-heading"><span className="step">03</span><div><h2>Inspect & edit</h2><p>Validate the protocol and apply your changes</p></div><button type="button" className="editor-toggle" onClick={()=>setShowEditor(v=>!v)} aria-expanded={showEditor} aria-controls="json-editor-area">{showEditor?'Collapse':'Expand'}</button></div>

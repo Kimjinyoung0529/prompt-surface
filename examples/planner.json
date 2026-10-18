@@ -1,0 +1,502 @@
+{
+  "version": "1.0",
+  "title": "Seoul Weekend Planner",
+  "state": {
+    "pace": "relaxed",
+    "transport": "subway",
+    "activeTab": "overview",
+    "openFAQ": "travel",
+    "slideIndex": 0,
+    "reminders": true,
+    "guests": 2
+  },
+  "root": {
+    "type": "column",
+    "props": {
+      "gap": 16
+    },
+    "children": [
+      {
+        "type": "badge",
+        "props": {
+          "text": "✦ Interactive travel assistant"
+        }
+      },
+      {
+        "type": "heading",
+        "props": {
+          "text": "Your weekend in Seoul",
+          "level": 2
+        }
+      },
+      {
+        "type": "text",
+        "props": {
+          "text": "A flexible city itinerary for {{guests}} travelers. Switch tabs, compare costs and tune your trip."
+        }
+      },
+      {
+        "type": "grid",
+        "props": {
+          "columns": 3,
+          "gap": 10
+        },
+        "children": [
+          {
+            "type": "metric",
+            "props": {
+              "label": "Places",
+              "value": "6",
+              "description": "Curated stops"
+            }
+          },
+          {
+            "type": "metric",
+            "props": {
+              "label": "Budget",
+              "value": "₩85,000",
+              "description": "Per person"
+            }
+          },
+          {
+            "type": "metric",
+            "props": {
+              "label": "Time",
+              "value": "2 days",
+              "description": "Sat + Sun"
+            }
+          }
+        ]
+      },
+      {
+        "type": "card",
+        "children": [
+          {
+            "type": "column",
+            "props": {
+              "gap": 14
+            },
+            "children": [
+              {
+                "type": "heading",
+                "props": {
+                  "text": "Make it yours",
+                  "level": 3
+                }
+              },
+              {
+                "type": "slider",
+                "bind": "guests",
+                "props": {
+                  "label": "Travelers",
+                  "min": 1,
+                  "max": 8,
+                  "step": 1
+                }
+              },
+              {
+                "type": "segmented-control",
+                "bind": "pace",
+                "props": {
+                  "label": "Travel pace",
+                  "options": [
+                    {
+                      "label": "🌿 Relaxed",
+                      "value": "relaxed"
+                    },
+                    {
+                      "label": "⚡ Active",
+                      "value": "active"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "radio-group",
+                "bind": "transport",
+                "props": {
+                  "label": "Getting around",
+                  "options": [
+                    {
+                      "label": "🚇 Subway",
+                      "value": "subway"
+                    },
+                    {
+                      "label": "🚕 Taxi",
+                      "value": "taxi"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "switch",
+                "bind": "reminders",
+                "props": {
+                  "label": "Enable planning reminders"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "callout",
+        "when": {
+          "path": "pace",
+          "op": "eq",
+          "value": "relaxed"
+        },
+        "props": {
+          "variant": "success",
+          "title": "Relaxed pace selected",
+          "description": "Room for cafés and spontaneous stops between destinations."
+        }
+      },
+      {
+        "type": "callout",
+        "when": {
+          "path": "pace",
+          "op": "eq",
+          "value": "active"
+        },
+        "props": {
+          "variant": "warning",
+          "title": "Active pace selected",
+          "description": "Consider pre-booking popular attractions to stay on schedule."
+        }
+      },
+      {
+        "type": "tabs",
+        "id": "trip-tabs",
+        "bind": "activeTab",
+        "props": {
+          "label": "Travel information",
+          "options": [
+            {
+              "label": "Overview",
+              "value": "overview"
+            },
+            {
+              "label": "Costs",
+              "value": "costs"
+            },
+            {
+              "label": "Tips",
+              "value": "tips"
+            }
+          ]
+        },
+        "children": [
+          {
+            "type": "tab-panel",
+            "props": {
+              "value": "overview"
+            },
+            "children": [
+              {
+                "type": "column",
+                "props": {
+                  "gap": 14
+                },
+                "children": [
+                  {
+                    "type": "heading",
+                    "props": {
+                      "text": "Highlights",
+                      "level": 3
+                    }
+                  },
+                  {
+                    "type": "list",
+                    "props": {
+                      "ordered": true,
+                      "items": [
+                        "Gyeongbokgung Palace",
+                        "Bukchon Hanok Village",
+                        "Ikseon-dong cafés",
+                        "Cheonggyecheon evening walk"
+                      ]
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "props": {
+                      "text": "Adjust the pace above to customize your plan."
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tab-panel",
+            "props": {
+              "value": "costs"
+            },
+            "children": [
+              {
+                "type": "column",
+                "props": {
+                  "gap": 14
+                },
+                "children": [
+                  {
+                    "type": "heading",
+                    "props": {
+                      "text": "Estimated spending",
+                      "level": 3
+                    }
+                  },
+                  {
+                    "type": "table",
+                    "props": {
+                      "caption": "Illustrative costs per person",
+                      "columns": [
+                        {
+                          "key": "item",
+                          "label": "Category"
+                        },
+                        {
+                          "key": "cost",
+                          "label": "Estimate"
+                        }
+                      ],
+                      "rows": [
+                        {
+                          "item": "Food & cafés",
+                          "cost": "₩40,000"
+                        },
+                        {
+                          "item": "Transit",
+                          "cost": "₩10,000"
+                        },
+                        {
+                          "item": "Admissions",
+                          "cost": "₩15,000"
+                        },
+                        {
+                          "item": "Extras",
+                          "cost": "₩20,000"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tab-panel",
+            "props": {
+              "value": "tips"
+            },
+            "children": [
+              {
+                "type": "column",
+                "props": {
+                  "gap": 14
+                },
+                "children": [
+                  {
+                    "type": "callout",
+                    "props": {
+                      "title": "Local travel tip",
+                      "description": "Check official opening hours before visiting palaces.",
+                      "variant": "info"
+                    }
+                  },
+                  {
+                    "type": "link",
+                    "props": {
+                      "label": "Seoul official tourism website ↗",
+                      "href": "https://english.visitseoul.net",
+                      "external": true
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "props": {
+          "text": "Trip inspiration",
+          "level": 3
+        }
+      },
+      {
+        "type": "carousel",
+        "id": "travel-carousel",
+        "bind": "slideIndex",
+        "props": {
+          "label": "Weekend ideas"
+        },
+        "children": [
+          {
+            "type": "card",
+            "children": [
+              {
+                "type": "column",
+                "props": {
+                  "gap": 14
+                },
+                "children": [
+                  {
+                    "type": "badge",
+                    "props": {
+                      "text": "DAY 01"
+                    }
+                  },
+                  {
+                    "type": "heading",
+                    "props": {
+                      "text": "History & old streets",
+                      "level": 3
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "props": {
+                      "text": "Palace → Hanok village → tea room"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "card",
+            "children": [
+              {
+                "type": "column",
+                "props": {
+                  "gap": 14
+                },
+                "children": [
+                  {
+                    "type": "badge",
+                    "props": {
+                      "text": "DAY 02"
+                    }
+                  },
+                  {
+                    "type": "heading",
+                    "props": {
+                      "text": "Design & evening lights",
+                      "level": 3
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "props": {
+                      "text": "Art → concept shops → stream walk"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "card",
+            "children": [
+              {
+                "type": "column",
+                "props": {
+                  "gap": 14
+                },
+                "children": [
+                  {
+                    "type": "badge",
+                    "props": {
+                      "text": "BONUS"
+                    }
+                  },
+                  {
+                    "type": "heading",
+                    "props": {
+                      "text": "Rainy-day backup",
+                      "level": 3
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "props": {
+                      "text": "Museum → bookstore → indoor café"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "accordion",
+        "id": "travel-faq",
+        "bind": "openFAQ",
+        "props": {
+          "label": "Travel FAQ",
+          "options": [
+            {
+              "label": "Do I need transit cards?",
+              "value": "travel"
+            },
+            {
+              "label": "Is this an official reservation?",
+              "value": "booking"
+            }
+          ]
+        },
+        "children": [
+          {
+            "type": "tab-panel",
+            "props": {
+              "value": "travel"
+            },
+            "children": [
+              {
+                "type": "text",
+                "props": {
+                  "text": "A transit card can make multiple subway or bus rides easier."
+                }
+              }
+            ]
+          },
+          {
+            "type": "tab-panel",
+            "props": {
+              "value": "booking"
+            },
+            "children": [
+              {
+                "type": "text",
+                "props": {
+                  "text": "No. This is a sample itinerary UI with illustrative costs, not a real booking."
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "button",
+        "props": {
+          "label": "Save itinerary"
+        },
+        "on": {
+          "click": [
+            {
+              "type": "emit",
+              "name": "trip.save",
+              "payload": {
+                "kind": "weekend"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

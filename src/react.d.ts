@@ -21,5 +21,6 @@ export declare function Surface(props: {
   registry?: Record<string, CustomSurfaceRenderer>;
   onEvent?: (event: SurfaceEvent) => void;
   className?: string;
+  theme?: 'light' | 'dark';
   empty?: React.ReactNode;
 }): React.ReactElement;

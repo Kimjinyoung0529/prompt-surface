@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.1 — 2026-10-18
+
+- Added Chromium Playwright end-to-end tests for actual React Studio on desktop and mobile; automatic PNG screenshots included as GitHub Actions artifacts.
+- Improved readable labels, visible keyboard focus, responsive panels and mobile spacing.
+- Added document/state reset, document JSON export, and a collapsible inspector.
+- Extended GitHub Actions CI to run browser tests and upload a built Studio and real screenshots.
+- Core protocol and 19 built-in components remain backwards compatible.
+
 ## 0.2.0 — 2026-10-18
 
 - Added `prompt-surface/transport` with `parseSurfaceText`, `createSurfaceEventDecoder` and `consumeSurfaceStream` for JSONL/SSE Fetch and ReadableStream input.

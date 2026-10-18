@@ -2,7 +2,7 @@
 
 **A model-agnostic generative UI engine for React.** Turn validated JSON into real, stateful, interactive React UI—without executing model-produced code.
 
-> Status: **v0.2.0 developer preview**. Core tests pass; production hardening, full a11y audits, React integration tests and security review are still required. Not yet published to npm.
+> Status: **v0.2.1 developer preview**. Core tests pass; production hardening, full a11y audits, full accessibility audits and security review are still required. Not yet published to npm.
 
 Prompt Surface is an original implementation, **not a bundled copy** of OpenAI Apps SDK UI, json-render, CopilotKit, or Open Intelligent UI. Those projects are useful inspirations and potential future adapters, but no code from them is vendored here.
 
@@ -20,7 +20,7 @@ Prompt Surface is an original implementation, **not a bundled copy** of OpenAI A
 
 ## Local Studio (interactive React playground)
 
-An editable 3-panel UI lives in [`examples/playground`](examples/playground/README.md). The presets and stream simulation are fully local; optionally connect a model using a **server-side** API key.
+An editable 3-panel UI lives in [`examples/playground`](examples/playground/README.md). The presets and stream simulation are fully local; optionally connect a model using a **server-side** API key. Studio v0.2.1 has responsive layouts, keyboard focus cues, state reset, document export and automated Chromium tests.
 
 ```bash
 cd examples/playground
@@ -109,7 +109,7 @@ decoder.finish();
 
 Streaming patch applications are **atomic**: invalid updates are rejected without changing the existing document. The protocol does not run untrusted scripts.
 
-## v0.2.0: consume a model response or a live stream
+## v0.2.x: consume a model response or a live stream
 
 `prompt-surface/transport` adds **provider-neutral** helpers. A model endpoint can return a single complete JSON surface or send JSONL / SSE with `snapshot` and `patch` events. On input, the runtime validates every event without executing arbitrary model code.
 
@@ -169,7 +169,7 @@ Custom renderers are trusted application code; they receive data from model outp
 | `image` | `src`, `alt` | http(s) URL only |
 | `bar-chart`, `line-chart` | `data`, `dataPath`, `title` | Lightweight SVG charts |
 
-Maps, editors, 3D, video, product grids and more are **custom registry components**, not built in at v0.1.0. This package does not ship ready-made adapters for CopilotKit, json-render or Apps SDK yet.
+Maps, editors, 3D, video, product grids and more are **custom registry components**, not built in at v0.2.1. This package does not ship ready-made adapters for CopilotKit, json-render or Apps SDK yet.
 
 ## API
 
@@ -180,6 +180,21 @@ Maps, editors, 3D, video, product grids and more are **custom registry component
 `prompt-surface/styles.css`: default styles with `--ps-*` CSS variables; you can theme or override styles.
 
 See [protocol](docs/PROTOCOL.md), [architecture](docs/ARCHITECTURE.md), [security](docs/SECURITY.md), and the [JSON Schema](docs/surface.schema.json). Example documents: [`recipe.json`](examples/recipe.json) and [`dashboard.json`](examples/dashboard.json).
+
+## Actual browser screenshots and integration tests
+
+Unlike a static mockup, the screenshots produced by the browser test suite come from the **actual built React Studio**, driven by Chromium. The GitHub Actions CI workflow runs 6 Playwright checks across desktop and mobile, including input binding, checkbox/action events, document validation, JSONL streaming, viewport overflow, and screenshots. On CI, open the latest successful [Actions run](https://github.com/Kimjinyoung0529/prompt-surface/actions) and download the artifact `prompt-surface-studio-browser-results` (PNG images inside test-results) or `prompt-surface-studio-build` (built React app). Screenshots are artifacts of that particular commit, not hand-drawn mockups.
+
+Run locally after installing Studio dependencies:
+
+```bash
+cd examples/playground
+npm install
+npx playwright install chromium
+npm run test:e2e
+```
+
+The Playwright suite launches Vite on localhost automatically. Browser test tooling is only a dev dependency of Studio, not of the core library.
 
 ## Quality checks
 
@@ -194,15 +209,15 @@ npm run example
 
 ## Roadmap
 
-1. React DOM and browser integration tests, focus/accessibility test suite.
+1. Comprehensive keyboard and screen-reader accessibility testing, visual regression baselines.
 2. JSON Schema-constrained generation adapters for multiple LLM providers.
 3. Opt-in Maps, 3D and editor adapters via custom component registry.
 4. Authenticated server event hooks, themes, SSR testing, docs site, versioned changelog.
 
-## Create a GitHub repository
+## GitHub repository
 
-This starter is GitHub-ready. After installing the GitHub CLI and signing in with `gh auth login`, run `./scripts/create-github-repo.sh prompt-surface` from the project root. The script creates a **new public repository** and pushes the initial commit. This does not happen automatically when you download the archive.
+Source and CI: https://github.com/Kimjinyoung0529/prompt-surface. New users can fork the repository or clone it locally.
 
 ## License
 
-MIT. Contributions welcome after a GitHub repository is initialized.
+MIT. Contributions welcome.

@@ -1,0 +1,198 @@
+{
+  "version": "1.0",
+  "title": "Interactive Knowledge Quiz",
+  "state": {
+    "answer": "",
+    "revealed": false,
+    "hint": false,
+    "difficulty": "easy"
+  },
+  "root": {
+    "type": "column",
+    "props": {
+      "gap": 14
+    },
+    "children": [
+      {
+        "type": "badge",
+        "props": {
+          "text": "STUDY MODE · QUIZ"
+        }
+      },
+      {
+        "type": "heading",
+        "props": {
+          "text": "How do stars shine?",
+          "level": 2
+        }
+      },
+      {
+        "type": "text",
+        "props": {
+          "text": "Choose an answer and check your understanding."
+        }
+      },
+      {
+        "type": "card",
+        "children": [
+          {
+            "type": "column",
+            "props": {
+              "gap": 14
+            },
+            "children": [
+              {
+                "type": "segmented-control",
+                "bind": "difficulty",
+                "props": {
+                  "label": "Difficulty",
+                  "options": [
+                    {
+                      "value": "easy",
+                      "label": "Beginner"
+                    },
+                    {
+                      "value": "hard",
+                      "label": "Advanced"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "heading",
+                "props": {
+                  "text": "What powers our Sun?",
+                  "level": 3
+                }
+              },
+              {
+                "type": "radio-group",
+                "id": "quiz-answer",
+                "bind": "answer",
+                "props": {
+                  "label": "Pick the correct process",
+                  "options": [
+                    {
+                      "label": "Nuclear fusion",
+                      "value": "fusion"
+                    },
+                    {
+                      "label": "Nuclear fission",
+                      "value": "fission"
+                    },
+                    {
+                      "label": "Chemical combustion",
+                      "value": "burning"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "row",
+                "props": {
+                  "gap": 8
+                },
+                "children": [
+                  {
+                    "type": "button",
+                    "props": {
+                      "label": "Check answer"
+                    },
+                    "on": {
+                      "click": [
+                        {
+                          "type": "set",
+                          "path": "revealed",
+                          "value": true
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "button",
+                    "props": {
+                      "label": "Start over"
+                    },
+                    "on": {
+                      "click": [
+                        {
+                          "type": "set",
+                          "path": "answer",
+                          "value": ""
+                        },
+                        {
+                          "type": "set",
+                          "path": "revealed",
+                          "value": false
+                        },
+                        {
+                          "type": "set",
+                          "path": "hint",
+                          "value": false
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "callout",
+                "when": {
+                  "path": "revealed",
+                  "op": "truthy"
+                },
+                "props": {
+                  "variant": "info",
+                  "title": "Explanation",
+                  "description": "The Sun combines hydrogen nuclei into helium, releasing energy."
+                }
+              },
+              {
+                "type": "badge",
+                "when": {
+                  "path": "answer",
+                  "op": "eq",
+                  "value": "fusion"
+                },
+                "props": {
+                  "text": "Selected: Nuclear fusion"
+                }
+              },
+              {
+                "type": "button",
+                "props": {
+                  "label": "Toggle hint"
+                },
+                "on": {
+                  "click": [
+                    {
+                      "type": "toggle",
+                      "path": "hint"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "text",
+                "when": {
+                  "path": "hint",
+                  "op": "truthy"
+                },
+                "props": {
+                  "text": "Hint: it joins smaller nuclei together."
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "quote",
+        "props": {
+          "text": "The important thing is not to stop questioning.",
+          "author": "Albert Einstein"
+        }
+      }
+    ]
+  }
+}

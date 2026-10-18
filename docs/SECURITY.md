@@ -28,3 +28,12 @@ This is a developer preview and has **not** undergone an independent security au
 ## Local development backend
 
 `examples/playground/server.mjs` binds only to `127.0.0.1` and requires environment-based credentials. It is **not production ready**: add authentication, CSRF protections, rate limiting, observability, content moderation, quotas, retry policy, timeout governance, and deployment-specific network controls before exposure to anyone else. Never use a production secret in front-end source.
+
+## v0.3 renderer safety notes
+
+- `link` nodes accept only HTTP(S), a safe root-relative path, or an in-document fragment. Unrecognized protocols (including `javascript:`, `data:`, and `file:`) are omitted. External links receive `rel="noopener noreferrer"`. **The link can still lead to untrusted remote content**; the host is responsible for trust and navigation policy.
+- `code` nodes are text-only (using React's escaped text rendering); generated HTML/JS is never compiled or evaluated.
+- Table and list cell contents are rendered as text. State references to unavailable or prohibited paths are ignored.
+- Newly added option controls require explicit host-visible state binding (`bind`) to remain interactive.
+- Tabs use button/tablist semantics and keyboard navigation; this is not a substitute for a full accessibility audit with assistive technology.
+- The local Studio generation endpoint is for development only: loopback binding is not sufficient if you proxy it to the internet.
