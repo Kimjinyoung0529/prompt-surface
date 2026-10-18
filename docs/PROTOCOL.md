@@ -51,5 +51,6 @@ The core JSON schema is permissive about node types. Host renderers decide which
 - `callout`: `props.title`, `description`, `variant` (`info`, `success`, `warning`, `danger`).
 - `code`/`quote`/`link`: text-only code and quote, and HTTP(S)/safe relative links; `javascript:` is blocked.
 - `spacer`: `props.height` in clamped CSS pixels.
+- `progress`: set `props.label` to a meaningful, user-facing name and `props.value` or `bind` to a numeric progress value; `props.max` defaults to 100. The React renderer exposes the label as the native progressbar's accessible name. Without a label, the fallback accessible name is `Progress` (localize by supplying a label).
 
 For reusable app integrations, always use unique node IDs. State paths passed through `bind` are validated and guarded against prototype pollution. When JSON is model-generated, authenticate privileged `emit` actions separately; a UI gesture does not grant backend authorization.
