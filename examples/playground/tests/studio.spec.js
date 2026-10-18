@@ -67,7 +67,7 @@ test('travel planner tabs, radio, accordion and theme are usable', async ({ page
   await page.getByRole('radio',{name:'🚕 Taxi'}).check();
   await page.getByRole('tab',{name:'Costs'}).click();
   await expect(page.getByRole('table')).toBeVisible();
-  await expect(page.getByText('₩40,000')).toBeVisible();
+  await expect(page.locator('.ps-table').getByText('₩40,000')).toBeVisible();
   await page.getByRole('button',{name:'Is this an official reservation?'}).click();
   await expect(page.locator('.preview-stage .ps-surface').getByText('No. This is a sample itinerary UI with illustrative costs, not a real booking.')).toBeVisible();
   await page.getByRole('button',{name:'Toggle preview theme'}).click();
