@@ -229,7 +229,11 @@ export function createSurfaceStore(initialDocument, options = {}) {
     getSnapshot: () => snapshot,
     subscribe: fn => { listeners.add(fn); return () => listeners.delete(fn); },
     setState: (path, value) => {
-      document = { ...document, state: writePath(document.state, path, value) };
+      // Validate the entire candidate before committing, just like stream patches.
+      // Invalid state must not change the snapshot or notify subscribers.
+      const next = { ...document, state: writePath(document.state, path, value) };
+      assertSurface(next);
+      document = next;
       notify();
     },
     dispatch: (action, event) => {

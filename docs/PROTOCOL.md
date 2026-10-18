@@ -8,7 +8,7 @@ A document consists of `{version:"1.0", title?, state:{}, root:Node}`. Nodes are
 
 ## State binding
 
-`bind` is a dot-separated state path (for example, `user.email`). Input controls call `store.setState` when edited. Labels interpolate `{{user.email}}` safely as text.
+`bind` is a dot-separated state path (for example, `user.email`). Input controls call `store.setState` when edited. Labels interpolate `{{user.email}}` safely as text. `store.setState` validates the complete resulting surface before committing: non-JSON values, unsafe keys, and oversized documents are rejected without updating the state, revision, or subscribers. The same guarantee applies to actions that call `setState`; catch `SurfaceError` when accepting untrusted host inputs.
 
 ## Actions
 
