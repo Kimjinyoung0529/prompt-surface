@@ -1,6 +1,7 @@
 /** React renderer for prompt-surface — no arbitrary markup or code execution. */
 import * as React from 'react';
 import { createSurfaceStore, evaluateCondition, interpolate, readPath } from './core.js';
+import { chartAccessibleDescription } from './chart-a11y.js';
 
 const h = React.createElement;
 const SurfaceContext = React.createContext(null);
@@ -208,6 +209,7 @@ function chartData(props,state) {
 }
 
 function BarChart({data,title}) {
+  const descriptionId = React.useId();
   const width=500,height=210,pad=35,plotW=width-2*pad,plotH=height-2*pad;
   const max=Math.max(1,...data.map(d=>d.value),0);
   const min=Math.min(0,...data.map(d=>d.value));
@@ -216,7 +218,7 @@ function BarChart({data,title}) {
   const step=plotW/Math.max(data.length,1),barW=Math.max(4,step*.6);
   return h('figure',{className:'ps-chart'},
     title?h('figcaption',null,title):null,
-    h('svg',{viewBox:`0 0 ${width} ${height}`,role:'img','aria-label':title||'Bar chart'},
+    h('svg',{viewBox:`0 0 ${width} ${height}`,role:'img','aria-label':title||'Bar chart','aria-describedby':descriptionId},
       h('line',{x1:pad,y1:zeroY,x2:width-pad,y2:zeroY,className:'ps-chart-axis'}),
       ...data.map((d,i)=>{
         const x=pad+i*step+(step-barW)/2;
@@ -226,10 +228,12 @@ function BarChart({data,title}) {
           h('rect',{x,y:Math.min(y,zeroY),width:barW,height:Math.max(1,Math.abs(zeroY-y)),rx:3,className:'ps-chart-bar'}),
           h('text',{x:x+barW/2,y:height-14,textAnchor:'middle',className:'ps-chart-label'},d.label.slice(0,9)),
           h('text',{x:x+barW/2,y:Math.max(11,Math.min(y,zeroY)-6),textAnchor:'middle',className:'ps-chart-label'},String(d.value)));
-      })));
+      })),
+    h('p',{id:descriptionId,className:'ps-sr-only'},chartAccessibleDescription(data)));
 }
 
 function LineChart({data,title}) {
+  const descriptionId = React.useId();
   const width=500,height=210,pad=35,plotW=width-2*pad,plotH=height-2*pad;
   const max=Math.max(1,...data.map(d=>d.value));
   const min=Math.min(0,...data.map(d=>d.value));
@@ -237,11 +241,12 @@ function LineChart({data,title}) {
   const points=data.map((d,i)=>({x:pad+(data.length<=1?plotW/2:i*plotW/(data.length-1)),y:pad+(max-d.value)/range*plotH,...d}));
   return h('figure',{className:'ps-chart'},
     title?h('figcaption',null,title):null,
-    h('svg',{viewBox:`0 0 ${width} ${height}`,role:'img','aria-label':title||'Line chart'},
+    h('svg',{viewBox:`0 0 ${width} ${height}`,role:'img','aria-label':title||'Line chart','aria-describedby':descriptionId},
       h('line',{x1:pad,y1:height-pad,x2:width-pad,y2:height-pad,className:'ps-chart-axis'}),
       points.length>0?h('polyline',{points:points.map(p=>`${p.x},${p.y}`).join(' '),fill:'none',strokeWidth:3,className:'ps-chart-line'}):null,
       ...points.map((p,i)=>h('g',{key:i},
         h('title',null,`${p.label}: ${p.value}`),
         h('circle',{cx:p.x,cy:p.y,r:5,className:'ps-chart-dot'}),
-        h('text',{x:p.x,y:height-14,textAnchor:'middle',className:'ps-chart-label'},p.label.slice(0,9))))));
+        h('text',{x:p.x,y:height-14,textAnchor:'middle',className:'ps-chart-label'},p.label.slice(0,9))))),
+    h('p',{id:descriptionId,className:'ps-sr-only'},chartAccessibleDescription(data)));
 }

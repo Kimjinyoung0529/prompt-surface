@@ -51,5 +51,6 @@ The core JSON schema is permissive about node types. Host renderers decide which
 - `callout`: `props.title`, `description`, `variant` (`info`, `success`, `warning`, `danger`).
 - `code`/`quote`/`link`: text-only code and quote, and HTTP(S)/safe relative links; `javascript:` is blocked.
 - `spacer`: `props.height` in clamped CSS pixels.
+- `bar-chart` / `line-chart`: supply `props.data` or `props.dataPath` pointing to an array of `{label, value}` points, plus an optional `props.title`. SVG charts expose a descriptive accessible name and a screen-reader-only text summary of the displayed categories and numeric values (up to 36 points). Empty charts announce that no data is available. The text is escaped by React and never interpreted as HTML.
 
 For reusable app integrations, always use unique node IDs. State paths passed through `bind` are validated and guarded against prototype pollution. When JSON is model-generated, authenticate privileged `emit` actions separately; a UI gesture does not grant backend authorization.
